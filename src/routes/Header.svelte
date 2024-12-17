@@ -1,155 +1,166 @@
 <script>
-	import { page } from '$app/stores';
-	import { user } from '$lib/stores/session';
-	import { supabase } from '../supabase.js';
-	import { goto } from '$app/navigation';
+  import { page } from '$app/stores';
+  import { user } from '$lib/stores/session';
+  import { supabase } from '../supabase.js';
+  import { goto } from '$app/navigation';
 
-	async function handleLogout() {
-		const { error } = await supabase.auth.signOut();
-		if (!error) {
-			goto('/');
-		}
-	}
+  let mobileNavActive = false;
+
+  function toggleMobileNav() {
+    mobileNavActive = !mobileNavActive;
+    const navMenu = document.querySelector('.navmenu ul');
+    navMenu?.classList.toggle('show');
+  }
+
+  async function handleLogout() {
+    const { error } = await supabase.auth.signOut();
+    if (!error) {
+      goto('/');
+    }
+  }
 </script>
 
-<header>
-	<div class="corner">
-		<a href="/">
-			<span class="logo">ROL</span>
-		</a>
-	</div>
+<header class="header fixed-top">
+  <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
+    <a href="/" class="logo d-flex align-items-center">
+      <span class="sitename">ROL</span>
+    </a>
 
-	<nav>
-		<svg viewBox="0 0 2 3" aria-hidden="true">
-			<path d="M0,0 L1,2 C1.5,3 1.5,3 2,3 L2,0 Z" />
-		</svg>
-		<ul>
-			<li aria-current={$page.url.pathname === '/' ? 'page' : undefined}>
-				<a href="/">Home</a>
-			</li>
-			{#if $user}
-				<li aria-current={$page.url.pathname === '/events' ? 'page' : undefined}>
-					<a href="/events">Events</a>
-				</li>
-				<li aria-current={$page.url.pathname === '/profile' ? 'page' : undefined}>
-					<a href="/profile">Profile</a>
-				</li>
-			{/if}
-		</ul>
-		<svg viewBox="0 0 2 3" aria-hidden="true">
-			<path d="M0,0 L0,3 C0.5,3 0.5,3 1,2 L2,0 Z" />
-		</svg>
-	</nav>
-
-	<div class="corner">
-		{#if $user}
-			<button class="auth-button" on:click={handleLogout}>Logout</button>
-		{:else}
-			<a href="/auth" class="auth-button">Login</a>
-		{/if}
-	</div>
+    <nav id="navmenu" class="navmenu">
+      <ul>
+        <li><a href="/" class:active={$page.url.pathname === '/'}>Home</a></li>
+        {#if $user}
+          <li><a href="/events" class:active={$page.url.pathname === '/events'}>Events</a></li>
+          <li><a href="/teams" class:active={$page.url.pathname === '/teams'}>Teams</a></li>
+          <li><a href="/tournaments" class:active={$page.url.pathname === '/tournaments'}>Tournaments</a></li>
+          <li><a href="/profile" class:active={$page.url.pathname === '/profile'}>Profile</a></li>
+        {/if}
+        <li>
+          {#if $user}
+            <button class="btn-logout" on:click={handleLogout}>Logout</button>
+          {:else}
+            <a href="/auth" class="btn-login">Login</a>
+          {/if}
+        </li>
+      </ul>
+      <button class="mobile-nav-toggle d-xl-none bi bi-list" aria-label="Toggle Navigation" on:click={toggleMobileNav}>
+        <i class="fas fa-bars"></i>
+      </button>
+    </nav>
+  </div>
 </header>
 
 <style>
-	header {
-		display: flex;
-		justify-content: space-between;
-		background-color: var(--primary-bg);
-		padding: 1rem;
-		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-	}
+  .header {
+    transition: all 0.5s;
+    z-index: 997;
+    padding: 30px 0;
+    background: #fff;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+  }
 
-	.corner {
-		display: flex;
-		align-items: center;
-		min-width: 100px;
-		justify-content: center;
-	}
+  .header .logo {
+    text-decoration: none;
+  }
 
-	.logo {
-		font-size: 1.5rem;
-		font-weight: bold;
-		color: var(--accent-primary);
-		text-decoration: none;
-	}
+  .header .sitename {
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--color-primary, #0d42ff);
+    font-family: var(--font-primary, "Poppins", sans-serif);
+  }
 
-	nav {
-		display: flex;
-		justify-content: center;
-		--background: rgba(255, 255, 255, 0.7);
-	}
+  .navmenu {
+    padding: 0;
+    margin: 0;
+  }
 
-	svg {
-		width: 2em;
-		height: 3em;
-		display: block;
-	}
+  .navmenu ul {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    list-style: none;
+    align-items: center;
+    gap: 2rem;
+  }
 
-	path {
-		fill: var(--background);
-	}
+  .navmenu a,
+  .btn-logout,
+  .btn-login {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0;
+    font-family: var(--font-primary, "Poppins", sans-serif);
+    font-size: 16px;
+    font-weight: 500;
+    color: #172e59;
+    white-space: nowrap;
+    transition: 0.3s;
+    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
 
-	ul {
-		position: relative;
-		padding: 0;
-		margin: 0;
-		height: 3em;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		list-style: none;
-		background: var(--background);
-		background-size: contain;
-	}
+  .navmenu a:hover,
+  .navmenu .active,
+  .btn-logout:hover,
+  .btn-login:hover {
+    color: var(--color-primary, #0d42ff);
+  }
 
-	li {
-		position: relative;
-		height: 100%;
-	}
+  .btn-login,
+  .btn-logout {
+    padding: 8px 20px;
+    border-radius: 50px;
+    border: 1px solid var(--color-primary, #0d42ff);
+    color: var(--color-primary, #0d42ff);
+  }
 
-	li[aria-current='page']::before {
-		--size: 6px;
-		content: '';
-		width: 0;
-		height: 0;
-		position: absolute;
-		top: 0;
-		left: calc(50% - var(--size));
-		border: var(--size) solid transparent;
-		border-top: var(--size) solid var(--accent-primary);
-	}
+  .btn-login:hover,
+  .btn-logout:hover {
+    background-color: var(--color-primary, #0d42ff);
+    color: #fff;
+  }
 
-	nav a {
-		display: flex;
-		height: 100%;
-		align-items: center;
-		padding: 0 1em;
-		color: var(--primary-text);
-		font-weight: 700;
-		font-size: 0.8rem;
-		text-transform: uppercase;
-		letter-spacing: 0.1em;
-		text-decoration: none;
-		transition: color 0.2s linear;
-	}
+  .mobile-nav-toggle {
+    display: none;
+    color: #172e59;
+    font-size: 28px;
+    cursor: pointer;
+    line-height: 0;
+    transition: 0.5s;
+    position: relative;
+    z-index: 9999;
+    padding: 0;
+    border: none;
+    background: none;
+    margin-left: auto;
+  }
 
-	a:hover {
-		color: var(--accent-primary);
-	}
+  @media (max-width: 1200px) {
+    .mobile-nav-toggle {
+      display: block;
+    }
 
-	.auth-button {
-		padding: 0.5rem 1rem;
-		background-color: var(--accent-secondary);
-		color: var(--primary-bg);
-		border: none;
-		border-radius: 4px;
-		cursor: pointer;
-		text-decoration: none;
-		font-size: 0.9rem;
-	}
+    .navmenu ul {
+      display: none;
+      position: fixed;
+      top: 100px;
+      right: -100%;
+      width: 100%;
+      max-width: 300px;
+      background: #fff;
+      box-shadow: 0px 0px 30px rgba(127, 137, 161, 0.25);
+      transition: 0.3s;
+      flex-direction: column;
+      padding: 20px 0;
+    }
 
-	.auth-button:hover {
-		background-color: var(--accent-primary);
-		color: var(--primary-bg);
-	}
+    .navmenu ul.show {
+      right: 0;
+      display: flex;
+    }
+  }
 </style>
