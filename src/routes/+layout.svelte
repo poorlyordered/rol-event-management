@@ -41,10 +41,10 @@
 					</a>
 					<p>Your premier platform for organizing and managing eSports events. Join us in creating unforgettable gaming experiences.</p>
 					<div class="social-links d-flex mt-4">
-						<a href="#"><i class="fa-brands fa-twitter"></i></a>
-						<a href="#"><i class="fa-brands fa-facebook"></i></a>
-						<a href="#"><i class="fa-brands fa-discord"></i></a>
-						<a href="#"><i class="fa-brands fa-twitch"></i></a>
+						<a href="https://twitter.com/ROLEvents" aria-label="Twitter"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="https://facebook.com/ROLEvents" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
+                        <a href="https://discord.gg/ROLEvents" aria-label="Discord"><i class="fa-brands fa-discord"></i></a>
+                        <a href="https://twitch.tv/ROLEvents" aria-label="Twitch"><i class="fa-brands fa-twitch"></i></a>
 					</div>
 				</div>
 
