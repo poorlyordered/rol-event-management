@@ -1,28 +1,14 @@
-import { createServerClient } from '@supabase/ssr';
+import { createSupabaseServerClient } from '@supabase/auth-helpers-sveltekit';
 import type { Handle } from '@sveltejs/kit';
+import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY } from '$env/static/public';
 
-const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
-
-if (!supabaseUrl) throw new Error('Missing PUBLIC_SUPABASE_URL');
-if (!supabaseAnonKey) throw new Error('Missing PUBLIC_SUPABASE_ANON_KEY');
-
+// No need for the runtime checks since these are checked at build time
 export const handle: Handle = async ({ event, resolve }) => {
-    event.locals.supabase = createServerClient(
-        supabaseUrl,
-        supabaseAnonKey,
-        {
-            cookies: {
-                get: (key) => event.cookies.get(key),
-                set: (key, value, options) => {
-                    event.cookies.set(key, value, options);
-                },
-                remove: (key, options) => {
-                    event.cookies.delete(key, options);
-                },
-            },
-        }
-    );
+    event.locals.supabase = createSupabaseServerClient({
+        supabaseUrl: PUBLIC_SUPABASE_URL,
+        supabaseKey: PUBLIC_SUPABASE_ANON_KEY,
+        event
+    });
 
     /**
      * A convenience helper so we can just call await getSession() instead of

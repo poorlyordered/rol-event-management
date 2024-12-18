@@ -1,7 +1,7 @@
 <script>
   import { page } from '$app/stores';
   import { user } from '$lib/stores/session';
-  import { supabase } from '../supabase.js';
+  import { supabase } from '$lib/supabase/client';
   import { goto } from '$app/navigation';
 
   let mobileNavActive = false;
