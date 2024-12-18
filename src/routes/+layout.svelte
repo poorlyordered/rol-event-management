@@ -1,10 +1,11 @@
 <script>
 	import Header from './Header.svelte';
 	import '../app.css';
-	import { supabase } from '../supabase.js';
+	import { supabase } from '$lib/supabase/client';
 	import { user } from '$lib/stores/session';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
+	import { invalidate } from '$app/navigation';
 
 	/** @type {{children: import('svelte').Snippet}} */
 	let { children } = $props();
@@ -13,33 +14,24 @@
 		const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
 			if (session) {
 				user.set(session.user);
+				invalidate('supabase:auth');
 			} else {
 				user.set(null);
+				goto('/auth/login');
 			}
 		});
-
-		checkSession();
 
 		return () => {
 			subscription.unsubscribe();
 		};
 	});
-
-	async function checkSession() {
-		const { data: { session } } = await supabase.auth.getSession();
-		if (session) {
-			user.set(session.user);
-		}
-	}
 </script>
 
 <div class="app">
 	<Header />
-
-	<main class="main">
+	<main>
 		{@render children()}
 	</main>
-
 	<footer id="footer" class="footer">
 		<div class="container footer-top">
 			<div class="row gy-4">
@@ -49,10 +41,10 @@
 					</a>
 					<p>Your premier platform for organizing and managing eSports events. Join us in creating unforgettable gaming experiences.</p>
 					<div class="social-links d-flex mt-4">
-						<a href="#"><i class="fa-brands fa-twitter"></i></a>
-						<a href="#"><i class="fa-brands fa-facebook"></i></a>
-						<a href="#"><i class="fa-brands fa-discord"></i></a>
-						<a href="#"><i class="fa-brands fa-twitch"></i></a>
+						<a href="https://twitter.com/ROLEvents" aria-label="Twitter"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="https://facebook.com/ROLEvents" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
+                        <a href="https://discord.gg/ROLEvents" aria-label="Discord"><i class="fa-brands fa-discord"></i></a>
+                        <a href="https://twitch.tv/ROLEvents" aria-label="Twitch"><i class="fa-brands fa-twitch"></i></a>
 					</div>
 				</div>
 
@@ -98,9 +90,15 @@
 		min-height: 100vh;
 	}
 
-	.main {
+	main {
 		flex: 1;
-		padding-top: 90px; /* Account for fixed header */
+		display: flex;
+		flex-direction: column;
+		padding: 1rem;
+		width: 100%;
+		max-width: 1024px;
+		margin: 0 auto;
+		box-sizing: border-box;
 	}
 
 	.footer {

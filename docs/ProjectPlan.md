@@ -29,6 +29,25 @@
   - Navigation header with user state
   - Basic profile page
 
+#### Phase 3: Database Schema and Security
+- Database Schema Implementation 
+  - User profiles and authentication
+  - Tournament structure
+  - Team management
+  - League system
+  - Player profiles
+  - Staff roles and permissions
+- Row Level Security (RLS) Policies
+  - Basic table access policies 
+  - Tournament management policies 
+  - Team registration constraints 
+  - Region-based constraints 
+  - Staff permission policies (In Progress)
+    - Owner access
+    - Platform admin permissions
+    - Tournament director permissions
+    - League coordinator access
+
 ### In Progress 
 
 #### Phase 3: Event Management System
@@ -38,6 +57,15 @@
 - Event Listing and Management
   - Event cards and grid layout
   - Filtering and sorting options
+- Match Management System
+  - Match scheduling system
+  - Match result reporting
+  - Score validation
+  - Match history tracking
+  - Statistics collection
+  - Bracket generation
+  - Real-time match updates
+  - Match dispute resolution system
 
 ### Upcoming Tasks 
 
@@ -96,14 +124,37 @@
 - Reactive updates using Svelte stores
 - Persistent session handling in layout
 
-### Next Steps
-1. Implement event creation and management
-2. Add team functionality
-3. Develop tournament bracket system
-4. Create reporting dashboard
+### Current Blockers
+1. Staff Permissions System
+   - Infinite recursion in staff_members table policies
+   - Need to implement role-based access without recursive checks
+   - Testing required for different role combinations
 
-### Known Issues/Limitations
-- None currently reported
+### Next Steps
+1. Fix staff permissions policies
+   - Implement non-recursive role checks
+   - Test all role combinations
+   - Verify proper access control
+2. Complete tournament registration system
+   - Team size validation
+   - Registration period checks
+   - Region restrictions
+
+### Testing Status
+#### Completed Tests
+- Tournament registration constraints 
+- Team region validation 
+- Basic CRUD operations 
+
+#### Tests In Progress
+- Staff role permissions
+- Tournament director access
+- Platform admin capabilities
+
+#### Tests To Be Implemented
+- League management
+- Match scheduling
+- Tournament brackets
 
 ## Timeline and Milestones
 
