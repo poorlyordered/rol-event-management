@@ -1,10 +1,11 @@
 <script>
 	import Header from './Header.svelte';
 	import '../app.css';
-	import { supabase } from '../supabase.js';
+	import { supabase } from '$lib/supabase/client';
 	import { user } from '$lib/stores/session';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
+	import { invalidate } from '$app/navigation';
 
 	/** @type {{children: import('svelte').Snippet}} */
 	let { children } = $props();
@@ -13,33 +14,24 @@
 		const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
 			if (session) {
 				user.set(session.user);
+				invalidate('supabase:auth');
 			} else {
 				user.set(null);
+				goto('/auth/login');
 			}
 		});
-
-		checkSession();
 
 		return () => {
 			subscription.unsubscribe();
 		};
 	});
-
-	async function checkSession() {
-		const { data: { session } } = await supabase.auth.getSession();
-		if (session) {
-			user.set(session.user);
-		}
-	}
 </script>
 
 <div class="app">
 	<Header />
-
-	<main class="main">
+	<main>
 		{@render children()}
 	</main>
-
 	<footer id="footer" class="footer">
 		<div class="container footer-top">
 			<div class="row gy-4">
@@ -98,9 +90,15 @@
 		min-height: 100vh;
 	}
 
-	.main {
+	main {
 		flex: 1;
-		padding-top: 90px; /* Account for fixed header */
+		display: flex;
+		flex-direction: column;
+		padding: 1rem;
+		width: 100%;
+		max-width: 1024px;
+		margin: 0 auto;
+		box-sizing: border-box;
 	}
 
 	.footer {
